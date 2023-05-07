@@ -196,7 +196,7 @@ for filename in os.listdir("data/test/"):
 
         # Define the filename for the JPEG file
         filename2 = folder_path+filename[:-3]+"OUT"+".jpg"
-
+        filename2="test_predictions/"+filename[:-3]+"OUT"+".jpg"
         # Save the image to the specified filename
         img.save(filename2)
 
