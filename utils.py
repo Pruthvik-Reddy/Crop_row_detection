@@ -64,7 +64,7 @@ def make_image_gen(img_file_list=TRAIN_IMGS, batch_size = BATCH_SIZE):
             if IMG_SCALING is not None:
                 c_img = cv2.resize(c_img,(256,256),interpolation = cv2.INTER_AREA)
                 c_mask = cv2.resize(c_mask,(256,256),interpolation = cv2.INTER_AREA)
-            c_mask = np.reshape(c_mask,(c_mask.shape[0],c_mask.shape[1],-1))
+            c_mask = np.reshape(c_mask,(c_mask.shape[0],c_mask.shape[1],1))
             c_mask = c_mask > 0
             out_rgb += [c_img]
             out_mask += [c_mask]

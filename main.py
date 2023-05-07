@@ -34,7 +34,7 @@ NET_SCALING = None
 # downsampling in preprocessing
 IMG_SCALING = (1, 1)
 # number of validation images to use
-VALID_IMG_COUNT = 400
+VALID_IMG_COUNT = 20
 # maximum number of steps_per_epoch in training
 MAX_TRAIN_STEPS = 200
 AUGMENT_BRIGHTNESS = False
