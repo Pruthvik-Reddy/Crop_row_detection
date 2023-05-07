@@ -111,6 +111,7 @@ else:
     
 input_img = layers.Input(t_x.shape[1:], name = 'RGB_Input')
 pp_in_layer = input_img
+print("Shape of pp_in_layer is",pp_in_layer.shape)
 if NET_SCALING is not None:
     pp_in_layer = layers.AvgPool2D(NET_SCALING)(pp_in_layer)
     
@@ -205,7 +206,11 @@ callbacks_list = [checkpoint, early, reduceLROnPlat]
 step_count = min(MAX_TRAIN_STEPS, len(TRAIN_IMGS)//BATCH_SIZE)
 aug_gen = create_aug_gen(make_image_gen())
 val_gen = make_image_gen(TEST_IMGS, len(TEST_IMGS)//BATCH_SIZE)
-loss_history = [seg_model.fit_generator(aug_gen, 
+val_x,val_y=next(val_gen)
+print('x', val_x.shape, val_x.dtype, val_x.min(), val_x.max())
+print('y', val_y.shape, val_y.dtype, val_y.min(), val_y.max())
+
+loss_history = [seg_model.fit_generator(cur_gen, 
                              steps_per_epoch=step_count, 
                              epochs=NB_EPOCHS, 
                              validation_data=val_gen,
