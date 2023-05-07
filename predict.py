@@ -182,6 +182,7 @@ in_files=[]
 folder_path="data/test/"
 for filename in os.listdir("data/test/"):
     in_files.append(folder_path+filename)
+    print(folder_path+filename)
     TEST_IMGS=[folder_path+filename]
     valid_x = next(make_image_gen(TEST_IMGS,len(TEST_IMGS)))
     pred_y = seg_model.predict(valid_x)
