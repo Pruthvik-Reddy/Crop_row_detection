@@ -195,8 +195,8 @@ for filename in os.listdir("data/test/"):
         img = Image.fromarray(data[i, :, :, 0].astype(np.uint8), mode='L')
 
         # Define the filename for the JPEG file
-        filename2 = folder_path+filename[:-3]+"OUT"+".jpg"
-        filename2="test_predictions/"+filename[:-3]+"OUT"+".jpg"
+        filename2 = folder_path+filename[:-3]+"OUT"+".png"
+        filename2="test_predictions/"+filename[:-3]+"OUT"+".png"
         # Save the image to the specified filename
         img.save(filename2)
 
