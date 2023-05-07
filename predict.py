@@ -177,6 +177,7 @@ pred_y = seg_model.predict(valid_x)
 print(pred_y.shape, pred_y.min(), pred_y.max(), pred_y.mean())
 output_dir="test_predictions/"
 data=pred_y
+data=data*(255.0)
 for i in range(data.shape[0]):
     # Create a PIL image object from the grayscale data
     img = Image.fromarray(data[i, :, :, 0].astype(np.uint8), mode='L')
