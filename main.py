@@ -168,6 +168,11 @@ seg_model.summary()
 
 
 def dice_coef(y_true, y_pred, smooth=1):
+    print(type(y_pred))
+    print("the type of y true is ",type(y_true))
+    print("the shape of y_true is",y_true.shape)
+    print("the shape of y_pred is",y_pred.shape)
+    
     intersection = K.sum(y_true * y_pred, axis=[1,2,3])
     union = K.sum(y_true, axis=[1,2,3]) + K.sum(y_pred, axis=[1,2,3])
     return K.mean( (2. * intersection + smooth) / (union + smooth), axis=0)
