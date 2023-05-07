@@ -26,7 +26,7 @@ test_image_dir = os.path.join(data_dir, 'test')
 
 BATCH_SIZE = 4
 EDGE_CROP = 2
-NB_EPOCHS = 25
+NB_EPOCHS = 5
 GAUSSIAN_NOISE = 0.1
 UPSAMPLE_MODE = 'DECONV'
 # downsampling inside the network
