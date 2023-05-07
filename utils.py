@@ -31,10 +31,13 @@ VALID_IMG_COUNT = 400
 MAX_TRAIN_STEPS = 200
 AUGMENT_BRIGHTNESS = False
 
+
+
 def get_all_imgs():
     img_path = os.path.join(train_image_dir,'images')
     images = glob.glob(os.path.join(img_path,'*.*'))
     return [os.path.basename(image) for image in images]
+TRAIN_IMGS, TEST_IMGS = train_test_split(get_all_imgs())
 
 
 def cv2_brightness_augment(img):
