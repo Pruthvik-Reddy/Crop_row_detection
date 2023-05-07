@@ -173,6 +173,37 @@ checkpoint = ModelCheckpoint(weight_path, monitor='val_dice_coef', verbose=1,
 
 seg_model.load_weights(weight_path)
 
+
+
+
+
+
+in_files=[]
+folder_path="data/test/"
+for filename in os.listdir("data/test/"):
+    in_files.append(folder_path+filename)
+    TEST_IMGS=[folder_path+filename]
+    valid_x = next(make_image_gen(TEST_IMGS,len(TEST_IMGS)))
+    pred_y = seg_model.predict(valid_x)
+    print(pred_y.shape, pred_y.min(), pred_y.max(), pred_y.mean())
+    output_dir="test_predictions/"
+    data=pred_y
+    data=data*(255.0)
+    for i in range(data.shape[0]):
+        # Create a PIL image object from the grayscale data
+        img = Image.fromarray(data[i, :, :, 0].astype(np.uint8), mode='L')
+
+        # Define the filename for the JPEG file
+        filename2 = folder_path+filename[:-3]+"OUT"+".jpg"
+
+        # Save the image to the specified filename
+        img.save(filename2)
+
+        # Print the filename to confirm that the image was saved
+        print(f'Saved {filename2}')
+
+
+"""
 pred_y = seg_model.predict(valid_x)
 print(pred_y.shape, pred_y.min(), pred_y.max(), pred_y.mean())
 output_dir="test_predictions/"
@@ -190,3 +221,4 @@ for i in range(data.shape[0]):
 
     # Print the filename to confirm that the image was saved
     print(f'Saved {filename}')
+"""
