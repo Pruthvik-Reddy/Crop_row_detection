@@ -13,7 +13,10 @@ from utils import *
 import random
 from keras.preprocessing.image import ImageDataGenerator
 from keras import models, layers
-
+import keras.backend as K
+from keras.optimizers import Adam
+from keras.losses import binary_crossentropy
+from keras.callbacks import ModelCheckpoint, LearningRateScheduler, EarlyStopping, ReduceLROnPlateau
 
 
 montage_rgb = lambda x: np.stack([montage(x[:, :, :, i]) for i in range(x.shape[3])], -1)
@@ -162,3 +165,44 @@ if NET_SCALING is not None:
 
 seg_model = models.Model(inputs=[input_img], outputs=[d])
 seg_model.summary()
+
+
+def dice_coef(y_true, y_pred, smooth=1):
+    intersection = K.sum(y_true * y_pred, axis=[1,2,3])
+    union = K.sum(y_true, axis=[1,2,3]) + K.sum(y_pred, axis=[1,2,3])
+    return K.mean( (2. * intersection + smooth) / (union + smooth), axis=0)
+def dice_p_bce(in_gt, in_pred):
+    return 1e-3*binary_crossentropy(in_gt, in_pred) - dice_coef(in_gt, in_pred)
+def true_positive_rate(y_true, y_pred):
+    return K.sum(K.flatten(y_true)*K.flatten(K.round(y_pred)))/K.sum(y_true)
+seg_model.compile(optimizer=Adam(1e-4, decay=1e-6), loss=dice_p_bce, metrics=[dice_coef, 'binary_accuracy', true_positive_rate])
+
+
+weight_path="{}_weights.best.hdf5".format('seg_model')
+
+checkpoint = ModelCheckpoint(weight_path, monitor='val_dice_coef', verbose=1, 
+                             save_best_only=True, mode='max', save_weights_only = True)
+
+reduceLROnPlat = ReduceLROnPlateau(monitor='val_dice_coef', factor=0.5, 
+                                   patience=3, 
+                                   verbose=1, mode='max', epsilon=0.0001, cooldown=2, min_lr=1e-6)
+early = EarlyStopping(monitor="val_dice_coef", 
+                      mode="max", 
+                      patience=15) # probably needs to be more patient, but kaggle time is limited
+callbacks_list = [checkpoint, early, reduceLROnPlat]
+
+step_count = min(MAX_TRAIN_STEPS, len(TRAIN_IMGS)//BATCH_SIZE)
+aug_gen = create_aug_gen(make_image_gen())
+val_gen = make_image_gen(TEST_IMGS, len(TEST_IMGS)//BATCH_SIZE)
+loss_history = [seg_model.fit_generator(aug_gen, 
+                             steps_per_epoch=step_count, 
+                             epochs=NB_EPOCHS, 
+                             validation_data=val_gen,
+                             validation_steps=len(TEST_IMGS)//BATCH_SIZE,
+                             callbacks=callbacks_list,
+                            workers=1 # the generator is not very thread safe
+                                       )]
+
+
+seg_model.load_weights(weight_path)
+seg_model.save('seg_model_last.h5')
