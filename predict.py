@@ -51,7 +51,7 @@ def make_image_gen(img_file_list=TRAIN_IMGS, batch_size = BATCH_SIZE):
     all_batches = img_file_list
     out_rgb = []
     out_mask = []
-    img_path = os.path.join(train_image_dir,'images')
+    img_path = os.path.join(test_image_dir)
     while True:
         np.random.shuffle(all_batches)
         for c_img_id in all_batches:
