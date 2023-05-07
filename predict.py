@@ -58,7 +58,7 @@ def make_image_gen(img_file_list=TRAIN_IMGS, batch_size = BATCH_SIZE):
             c_img = imread(os.path.join(img_path,c_img_id))
             c_img = cv2_brightness_augment(c_img)
             if IMG_SCALING is not None:
-                c_img = cv2.resize(c_img,(256,256),interpolation = cv2.INTER_AREA)
+                c_img = cv2.resize(c_img,(320,240),interpolation = cv2.INTER_AREA)
                 
             out_rgb += [c_img]
             if len(out_rgb)>=batch_size:
