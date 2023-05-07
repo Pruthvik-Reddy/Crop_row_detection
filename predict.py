@@ -47,14 +47,31 @@ def get_all_imgs():
 
 TEST_IMGS = get_all_imgs()
 
+def make_image_gen(img_file_list=TRAIN_IMGS, batch_size = BATCH_SIZE):
+    all_batches = img_file_list
+    out_rgb = []
+    out_mask = []
+    img_path = os.path.join(train_image_dir,'images')
+    while True:
+        np.random.shuffle(all_batches)
+        for c_img_id in all_batches:
+            c_img = imread(os.path.join(img_path,c_img_id))
+            c_img = cv2_brightness_augment(c_img)
+            if IMG_SCALING is not None:
+                c_img = cv2.resize(c_img,(256,256),interpolation = cv2.INTER_AREA)
+                
+            out_rgb += [c_img]
+            if len(out_rgb)>=batch_size:
+                yield np.stack(out_rgb, 0)/255.0
+                out_rgb=[]
 
 
 
 
 
 #MAKE VALIDATION SET
-valid_x, valid_y = next(make_image_gen(TEST_IMGS,len(TEST_IMGS)))
-print(valid_x.shape, valid_y.shape)
+valid_x = next(make_image_gen(TEST_IMGS,len(TEST_IMGS)))
+print(valid_x.shape)
 
 
 
