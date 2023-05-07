@@ -11,6 +11,25 @@ import gc; gc.enable() # memory is tight
 from skimage.morphology import label
 import random
 
+montage_rgb = lambda x: np.stack([montage(x[:, :, :, i]) for i in range(x.shape[3])], -1)
+data_dir = 'data'
+train_image_dir = os.path.join(data_dir, 'train')
+test_image_dir = os.path.join(data_dir, 'test')
+
+BATCH_SIZE = 4
+EDGE_CROP = 2
+NB_EPOCHS = 25
+GAUSSIAN_NOISE = 0.1
+UPSAMPLE_MODE = 'DECONV'
+# downsampling inside the network
+NET_SCALING = None
+# downsampling in preprocessing
+IMG_SCALING = (1, 1)
+# number of validation images to use
+VALID_IMG_COUNT = 400
+# maximum number of steps_per_epoch in training
+MAX_TRAIN_STEPS = 200
+AUGMENT_BRIGHTNESS = False
 
 def get_all_imgs():
     img_path = os.path.join(train_image_dir,'images')
