@@ -17,7 +17,7 @@ import keras.backend as K
 from keras.optimizers import Adam
 from keras.losses import binary_crossentropy
 from keras.callbacks import ModelCheckpoint, LearningRateScheduler, EarlyStopping, ReduceLROnPlateau
-
+from PIL import Image
 
 montage_rgb = lambda x: np.stack([montage(x[:, :, :, i]) for i in range(x.shape[3])], -1)
 data_dir = 'data'
@@ -175,3 +175,17 @@ seg_model.load_weights(weight_path)
 
 pred_y = seg_model.predict(valid_x)
 print(pred_y.shape, pred_y.min(), pred_y.max(), pred_y.mean())
+output_dir="test_predictions/"
+data=pred_y
+for i in range(data.shape[0]):
+    # Create a PIL image object from the grayscale data
+    img = Image.fromarray(data[i, :, :, 0].astype(np.uint8), mode='L')
+
+    # Define the filename for the JPEG file
+    filename = f'image_{i}.jpg'
+
+    # Save the image to the specified filename
+    img.save(output_dir+filename)
+
+    # Print the filename to confirm that the image was saved
+    print(f'Saved {filename}')
