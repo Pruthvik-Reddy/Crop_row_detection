@@ -41,3 +41,11 @@ train_gen = make_image_gen()
 train_x, train_y = next(train_gen)
 print('x', train_x.shape, train_x.min(), train_x.max())
 print('y', train_y.shape, train_y.min(), train_y.max())
+
+
+
+
+#MAKE VALIDATION SET
+valid_x, valid_y = next(make_image_gen(TEST_IMGS,len(TEST_IMGS)))
+print(valid_x.shape, valid_y.shape)
+
